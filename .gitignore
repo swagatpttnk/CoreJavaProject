@@ -1,6 +1,5 @@
 .idea/
 *.iml
-README.md
-out/
+out/**
 *.class
 *.yml	
