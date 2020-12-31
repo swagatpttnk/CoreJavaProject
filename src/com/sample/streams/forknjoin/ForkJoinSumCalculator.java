@@ -1,15 +1,11 @@
-package com.sample.streams;
-
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
-import java.util.stream.LongStream;
+package com.sample.streams.forknjoin;
 
 public class ForkJoinSumCalculator
         extends java.util.concurrent.RecursiveTask<Long> {
     private final long[] numbers;
     private final int start;
     private final int end;
-    public static final long THRESHOLD = 10_000;
+    public static final long THRESHOLD = 5;
     public ForkJoinSumCalculator(long[] numbers) {
         this(numbers, 0, numbers.length);
     }
@@ -20,8 +16,7 @@ public class ForkJoinSumCalculator
     }
     @Override
     protected Long compute() {
-
-        int length = end - start;
+        System.out.printf("compute() called by Thread:%s  [start:%s , end:%s ] \n",Thread.currentThread().getId(),start,end);        int length = end - start;
         if (length <= THRESHOLD) {
             return computeSequentially();
         }
@@ -30,11 +25,13 @@ public class ForkJoinSumCalculator
         leftTask.fork();
         ForkJoinSumCalculator rightTask =
                 new ForkJoinSumCalculator(numbers, start + length/2, end);
-        Long rightResult = rightTask.compute();
+        rightTask.fork();
+        Long rightResult = rightTask.join();
         Long leftResult = leftTask.join();
         return leftResult + rightResult;
     }
     private long computeSequentially() {
+        System.out.printf("computeSequentially() called by Thread:%s  [start:%s , end:%s ] \n",Thread.currentThread().getId(),start,end);
         long sum = 0;
         for (int i = start; i < end; i++) {
             sum += numbers[i];
