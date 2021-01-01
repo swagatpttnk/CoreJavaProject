@@ -14,6 +14,23 @@ public class ForkJoinSumCalculator
         this.start = start;
         this.end = end;
     }
+    /*@Override
+    protected Long compute() {
+        System.out.printf("compute() called by Thread:%s  [start:%s , end:%s ] \n",Thread.currentThread().getId(),start,end);        int length = end - start;
+        if (length <= THRESHOLD) {
+            return computeSequentially();
+        }
+        ForkJoinSumCalculator leftTask =
+                new ForkJoinSumCalculator(numbers, start, start + length/2);
+        leftTask.fork();
+        ForkJoinSumCalculator rightTask =
+                new ForkJoinSumCalculator(numbers, start + length/2, end);
+        rightTask.fork(); // forking both side is also fine & will work but will create more threads to process.
+                        //thus is recommended to use compute() recursively for one side thereby forking the other side.
+        Long rightResult = rightTask.join();
+        Long leftResult = leftTask.join();
+        return leftResult + rightResult;
+    }*/
     @Override
     protected Long compute() {
         System.out.printf("compute() called by Thread:%s  [start:%s , end:%s ] \n",Thread.currentThread().getId(),start,end);        int length = end - start;
@@ -25,8 +42,8 @@ public class ForkJoinSumCalculator
         leftTask.fork();
         ForkJoinSumCalculator rightTask =
                 new ForkJoinSumCalculator(numbers, start + length/2, end);
-        rightTask.fork();
-        Long rightResult = rightTask.join();
+
+        Long rightResult = rightTask.compute();
         Long leftResult = leftTask.join();
         return leftResult + rightResult;
     }
