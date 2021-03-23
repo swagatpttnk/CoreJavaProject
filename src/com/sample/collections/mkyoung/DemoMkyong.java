@@ -20,7 +20,7 @@ public class DemoMkyong {
         System.out.println("-- 1 ---");
         result.forEach(System.out::println);                //output : spring, node
 
-        //Sort with comparator
+        //Sort with comparator [b4 java 8]
         List<String> result2 = lines.stream().sorted().sorted(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
@@ -30,7 +30,7 @@ public class DemoMkyong {
         System.out.println("-- 2 ---");
         result2.forEach(System.out::println);
 
-        //Sort with comparator
+        //Sort with comparator wih Java 8
         Comparator<String> myComparator=Comparator.comparing(String::length).thenComparing(String::valueOf);
         List<String> result2_1 = lines.stream().sorted().sorted(myComparator).collect(toList());
         System.out.println("-- 2.1 ---");
@@ -81,16 +81,34 @@ public class DemoMkyong {
         System.out.println("-- 7 ---");
         nameList2.forEach(System.out::println);
     }
-    public void demoFlatMapping(){
+    public void demoFlatMapping1(){
         String[][] data = new String[][]{{"a", "b"}, {"c", "d"}, {"e", "f"}};
-        //Stream<String[]>
-        Stream<String[]> temp = Arrays.stream(data);
-        System.out.println("-- demoFlatMapping ---"+temp);
-        //temp.forEach(s-> System.out.println(s));
-        //filter a stream of string[], and return a string[]?
-        Stream<String[]> stream = temp.filter(x -> "a".equals(x.toString()));
-        System.out.println("-- demoFlatMapping 2---");
+
+        Stream<String[]> tempstream = Arrays.stream(data);// Stream of String[].
+        //tempstream.forEach(System.out::println); // do not iterate here else it will throw IlegalStateException
+                                                    // when we iterate it later for mapping
+
+        //Stream<String> stream = tempstream.flatMap(s -> Arrays.stream(s));
+        Stream<String> stream = tempstream.flatMap(Arrays::stream); // (Arrays::stream) is same as lambda (s -> Arrays.stream(s))
+        //Arrays::stream --> converted each item of tempstream i.e each String[] --> Stream<String> .
+        //flatMap converts Streams<Stream<String>> --> Stream<String> i.e a single stream.
+
+        System.out.println("-- demoFlatMapping:stream---");
         stream.forEach(System.out::println);
+    }
+    public void demoFlatMapping2(){
+        // Example from Java in  Action - Manning publication
+        String[] arrayOfWords = {"Goodbye", "World"};
+        //TODO here is : given an array of words, return a concatenated word with removed duplicate letters
+        //output: {"GodbyeWrld"}
+        Stream<String> streamOfwords = Arrays.stream(arrayOfWords);
+        List<String> wordWithDistinctLetters=streamOfwords
+                .map(word -> word.split(""))
+                .flatMap(Arrays::stream)
+                .distinct()
+                .collect(toList());
+        for(String s : arrayOfWords) System.out.println(s) ;
+        System.out.println(wordWithDistinctLetters);
     }
     public static void main(String[] args) {
 
@@ -98,6 +116,7 @@ public class DemoMkyong {
         //dm.demoSorting();
         //dm.demoFiltering();
         //dm.demoMapping();
-        dm.demoFlatMapping();
+        //dm.demoFlatMapping1();
+        dm.demoFlatMapping2();
     }
 }

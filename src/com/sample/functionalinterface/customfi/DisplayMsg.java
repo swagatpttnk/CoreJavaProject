@@ -7,6 +7,6 @@ public interface DisplayMsg {
     /*public default Object clone(){ //3.Can have default methods overriding the methods from Object class.
         return new Object();
     }*/
-    boolean equals(Object obj);//4.Can have non public methods of Object class.
+    boolean equals(Object obj);//4.Can have public methods of Object class.
     int hashCode();
 }

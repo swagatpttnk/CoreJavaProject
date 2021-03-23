@@ -25,7 +25,14 @@ public class Dish {
     }
     @Override
     public String toString() {
-        return name;
+        StringBuilder sb=new StringBuilder();
+        sb.append("[");
+        sb.append(getName());sb.append("|");
+        sb.append(((isVegetarian())?"Vegetarian":"Omnivorous"));sb.append("|");
+        sb.append(getCalories());sb.append("|");
+        sb.append(getType().name());
+        sb.append("]");
+        return sb.toString();
     }
     public enum Type { MEAT, FISH, OTHER }
 }

@@ -81,7 +81,7 @@ public class ForLoopExamples {
         arrayList.addAll(Arrays.asList("Tom","Dice","Harry"));
         arrayList.parallelStream().forEach (s->{
             System.out.println(s);
-            // count++; <---- uncomment this line willl result in ERROR as this variable is outside he Loop.
+            // count++; <---- uncomment this line willl result in ERROR as this variable is outside the Loop.
         });
 
         //2.It can be used for all collections but not arrays.
